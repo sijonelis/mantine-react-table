@@ -117,9 +117,9 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
         multiSelectProps?.data ??
         ((isAutoCompleteFilter || isSelectFilter || isMultiSelectFilter) &&
         facetedUniqueValues
-          ? Array.from(facetedUniqueValues.keys()).sort((a, b) =>
-              a.localeCompare(b),
-            )
+          ? Array.from(facetedUniqueValues.keys())
+              .filter((key) => key !== null)
+              .sort((a, b) => a.localeCompare(b))
           : [])
       )
         //@ts-ignore
