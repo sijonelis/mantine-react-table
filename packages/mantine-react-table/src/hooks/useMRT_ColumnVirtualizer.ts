@@ -53,7 +53,7 @@ export const useMRT_ColumnVirtualizer = <
               .sort((a, b) => a - b),
           ]
         : [[], []],
-    [columnPinning, enableColumnPinning],
+    [visibleColumns.length, columnPinning, enableColumnPinning],
   );
 
   const numPinnedLeft = leftPinnedIndexes.length;

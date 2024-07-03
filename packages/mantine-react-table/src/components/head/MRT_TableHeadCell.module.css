@@ -134,6 +134,8 @@
 
 .labels {
   align-items: center;
+  gap: rem(2px);
+  min-height: rem(22px);
 }
 
 .labels-right {
@@ -156,5 +158,6 @@
   align-items: center;
   align-self: center;
   white-space: nowrap;
-  margin-left: 2px;
+  gap: rem(2px);
+  margin-left: rem(2px);
 }

@@ -3,8 +3,10 @@ import classes from './MRT_TableHeadCell.module.css';
 import {
   type CSSProperties,
   type DragEventHandler,
+  type MutableRefObject,
   type ReactNode,
   useMemo,
+  useState,
 } from 'react';
 import { Flex, TableTh, type TableThProps, useDirection } from '@mantine/core';
 import { MRT_TableHeadCellFilterContainer } from './MRT_TableHeadCellFilterContainer';
@@ -21,6 +23,7 @@ import {
 import { parseCSSVarId } from '../../utils/style.utils';
 import { parseFromValuesOrFunc } from '../../utils/utils';
 import { MRT_ColumnActionMenu } from '../menus/MRT_ColumnActionMenu';
+import { useHover } from '@mantine/hooks';
 
 interface Props<TData extends MRT_RowData> extends TableThProps {
   columnVirtualizer?: MRT_ColumnVirtualizer;
@@ -48,6 +51,7 @@ export const MRT_TableHeadCell = <TData extends MRT_RowData>({
       enableColumnOrdering,
       enableColumnPinning,
       enableGrouping,
+      enableHeaderActionsHoverReveal,
       enableMultiSort,
       layoutMode,
       mantineTableHeadCellProps,
@@ -92,9 +96,20 @@ export const MRT_TableHeadCell = <TData extends MRT_RowData>({
   const isDraggingColumn = draggingColumn?.id === column.id;
   const isHoveredColumn = hoveredColumn?.id === column.id;
 
-  const showColumnActions =
+  const { hovered: isHoveredHeadCell, ref: isHoveredHeadCellRef } =
+    useHover<HTMLTableCellElement>();
+
+  const [isOpenedColumnActions, setIsOpenedColumnActions] = useState(false);
+
+  const columnActionsEnabled =
     (enableColumnActions || columnDef.enableColumnActions) &&
     columnDef.enableColumnActions !== false;
+
+  const showColumnButtons =
+    !enableHeaderActionsHoverReveal ||
+    isOpenedColumnActions ||
+    (isHoveredHeadCell &&
+      !table.getVisibleFlatColumns().find((column) => column.getIsResizing()));
 
   const showDragHandle =
     enableColumnDragging !== false &&
@@ -103,15 +118,16 @@ export const MRT_TableHeadCell = <TData extends MRT_RowData>({
       (enableColumnOrdering && columnDef.enableColumnOrdering !== false) ||
       (enableGrouping &&
         columnDef.enableGrouping !== false &&
-        !grouping.includes(column.id)));
+        !grouping.includes(column.id))) &&
+    showColumnButtons;
 
   const headerPL = useMemo(() => {
     let pl = 0;
     if (column.getCanSort()) pl++;
-    if (showColumnActions) pl += 1.75;
+    if (showColumnButtons) pl += 1.75;
     if (showDragHandle) pl += 1.25;
     return pl;
-  }, [showColumnActions, showDragHandle]);
+  }, [showColumnButtons, showDragHandle]);
 
   const handleDragEnter: DragEventHandler<HTMLTableCellElement> = (_e) => {
     if (enableGrouping && hoveredColumn?.id === 'drop-zone') {
@@ -184,6 +200,9 @@ export const MRT_TableHeadCell = <TData extends MRT_RowData>({
       ref={(node: HTMLTableCellElement) => {
         if (node) {
           tableHeadCellRefs.current[column.id] = node;
+          (
+            isHoveredHeadCellRef as MutableRefObject<HTMLTableCellElement>
+          ).current = node;
           if (columnDefType !== 'group') {
             columnVirtualizer?.measureElement?.(node);
           }
@@ -238,12 +257,17 @@ export const MRT_TableHeadCell = <TData extends MRT_RowData>({
                 >
                   {headerElement}
                 </Flex>
-                {column.getCanFilter() && (
-                  <MRT_TableHeadCellFilterLabel header={header} table={table} />
-                )}
-                {column.getCanSort() && (
-                  <MRT_TableHeadCellSortLabel header={header} table={table} />
-                )}
+                {column.getCanFilter() &&
+                  (column.getIsFiltered() || showColumnButtons) && (
+                    <MRT_TableHeadCellFilterLabel
+                      header={header}
+                      table={table}
+                    />
+                  )}
+                {column.getCanSort() &&
+                  (column.getIsSorted() || showColumnButtons) && (
+                    <MRT_TableHeadCellSortLabel header={header} table={table} />
+                  )}
               </Flex>
               {columnDefType !== 'group' && (
                 <Flex
@@ -261,8 +285,13 @@ export const MRT_TableHeadCell = <TData extends MRT_RowData>({
                       }}
                     />
                   )}
-                  {showColumnActions && (
-                    <MRT_ColumnActionMenu header={header} table={table} />
+                  {columnActionsEnabled && showColumnButtons && (
+                    <MRT_ColumnActionMenu
+                      header={header}
+                      table={table}
+                      opened={isOpenedColumnActions}
+                      onChange={setIsOpenedColumnActions}
+                    />
                   )}
                 </Flex>
               )}

@@ -42,6 +42,7 @@ export const MRT_GrabHandleButton = <TData extends MRT_RowData>({
           actionIconProps?.className,
         )}
         color="gray"
+        size="sm"
         onClick={(e) => {
           e.stopPropagation();
           actionIconProps?.onClick?.(e);
@@ -51,7 +52,7 @@ export const MRT_GrabHandleButton = <TData extends MRT_RowData>({
         title={undefined}
         variant="transparent"
       >
-        <IconGripHorizontal />
+        <IconGripHorizontal size="100%" />
       </ActionIcon>
     </Tooltip>
   );

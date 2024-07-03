@@ -2,6 +2,7 @@
   "name": "mantine-react-table-turbo",
   "author": "Kevin Vandy",
   "private": true,
+  "packageManager": "pnpm@9.3.0",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -26,8 +27,8 @@
     "storybook:dev": "turbo run storybook"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
-    "turbo": "^1.13.3"
+    "prettier": "^3.3.2",
+    "turbo": "^2.0.3"
   },
   "engines": {
     "node": ">=16.0.0"

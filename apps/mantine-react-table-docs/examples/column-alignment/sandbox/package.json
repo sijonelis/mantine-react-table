@@ -15,18 +15,18 @@
     "@tabler/icons-react": "3.5.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.11",
-    "mantine-react-table": "^2.0.0-beta.4",
+    "mantine-react-table": "^2.0.0-beta.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
     "postcss": "^8.4.38",
     "postcss-preset-mantine": "^1.15.0",
     "postcss-simple-vars": "^7.0.1",
     "typescript": "^5.4.5",
-    "vite": "^5.2.12"
+    "vite": "^5.2.13"
   }
 }
